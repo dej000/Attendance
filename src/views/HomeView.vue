@@ -60,8 +60,16 @@ export default {
 
             // Update isWithinLocation based on the check
             this.isWithinLocation = distance <= this.acceptedRadius;
-       
+            if (this.isWithinLocation) {
+              alert('Location allowed. Proceed with sign-up.');
+              // Add logic to proceed with sign-up or redirect to the registration page.
+            } else {
+              alert('You are not in the allowed location.');
+              // Add logic to handle disallowed location (e.g., show an error message).
+            }
+          
           },
+          
           (error) => {
             console.error('Geolocation error:', error.message);
             // Handle geolocation errors (e.g., show an error message to the user).
@@ -71,6 +79,7 @@ export default {
         console.error('Geolocation is not supported by your browser.');
         // Handle the case where geolocation is not supported by the browser.
       }
+    
     },
     calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; // Radius of the Earth in kilometers
