@@ -36,7 +36,7 @@ Sign Attendance
 export default {
   data() {
     return {
-      acceptedRadius: 0.1, // Default accepted radius in degrees, adjust as needed
+      acceptedRadius: 100, // Default accepted radius in degrees, adjust as needed
       isWithinLocation: false,
     };
   },mounted(){
