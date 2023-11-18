@@ -2,7 +2,31 @@
   <div class="mid">
     <div>
       <h1>Attendance Website</h1>
-      <button class="butt" @click="checkLocation" :disabled="!isWithinLocation">Sign Attendance</button>
+      
+<button @click="checkLocation" :disabled="!isWithinLocation" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+Sign Attendance
+</button>
+
+<div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="locationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="locationModalLabel">ATTENDANCE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p v-if="isWithinLocation">Attendance Signed</p>
+        <p v-else>You are not in the allowed location.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>
   
   </div>
@@ -60,15 +84,8 @@ export default {
 
       return distance;
     },
-    checkLocation(){
-           
-      if (this.isWithinLocation) {
-              alert('Attendance Signed');
-              // Add logic to proceed with sign-up or redirect to the registration page.
-            } else {
-              alert('You are not in the allowed location.');
-              // Add logic to handle disallowed location (e.g., show an error message).
-            }
+    checkLocation(){    
+      $('#locationModal').modal('show');
     }
   },
 };
