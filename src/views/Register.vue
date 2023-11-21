@@ -75,7 +75,7 @@
       <div class="form-group d-flex flex-column justify-content-center align-items-center gap-3 "><button type="submit" class="btn submit-btn  mb-3 btn-light " @click="register" >Sign Up  <div class="spinner-border spinner-border-sm " v-show="loading" role="status">
         <span class="visually-hidden">Loading...</span>
       </div></button>
-          <p  class="text-center">You already have an account?  <router-link to="/login"><a  class="text-decoration-none " href="">LOG IN</a></router-link></p>
+          <p  class="text-center">You already have an account?  <router-link to="/"><a  class="text-decoration-none " href="">LOG IN</a></router-link></p>
       </div>
   
       </Form>
