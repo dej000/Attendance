@@ -115,12 +115,15 @@
   
               // Update isWithinLocation based on the check
               this.isWithinLocation = distance <= this.acceptedRadius;
-              
+              if (this.isWithinLocation) {
+                alert('location allowed,you can sign ');
+            }
             
             },
             
             (error) => {
               console.error('Geolocation error:', error.message);
+              alert('You are not in the allowed location.');
               // Handle geolocation errors (e.g., show an error message to the user).
             }
           );
@@ -144,6 +147,7 @@
       },
       checkLocation(){    
         $('#locationModal').modal('show');
+   
       }
     },
   };
