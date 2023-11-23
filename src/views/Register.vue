@@ -92,10 +92,10 @@
   
   import * as Yup from 'yup';
   import { Form } from 'vee-validate';
-  
+  import { collection, addDoc } from "firebase/firestore"
   import { getAuth, createUserWithEmailAndPassword,AuthErrorCodes  } from "firebase/auth";
   import { useRouter } from 'vue-router'; // Import Vue Router
- 
+ import {db} from '../main'
 
   
  
@@ -116,6 +116,7 @@
       .oneOf([Yup.ref('password')], 'Passwords do not match'),
   }),
   errorMessage: '',
+  loading:false
       }
   
      },
@@ -131,9 +132,20 @@
   register() {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth,this.email,this.password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
   
     const user = userCredential.user;
+    const docRef = await addDoc(collection(db, "user"), {
+  id: user.uid,
+  name: this.name,
+    surname: this.surname,
+    email: this.email,
+    team:this.team,
+    department:this.department,
+    role:'USER'
+   
+});
+
     this.$router.push({ name: 'login' });
   })
   .catch((error) => {

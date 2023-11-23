@@ -55,10 +55,10 @@ import { useRouter } from 'vue-router'; // Import Vue Router
               const auth = getAuth();
       firebaseSignOut(auth)
 .then(() => {
-  console.log('User signed out');
+
   this.$router.push({ name: 'login' });
 }).catch((error) => {
-  // An error happened.
+ 
 });
 
     },
@@ -91,7 +91,7 @@ import { useRouter } from 'vue-router'; // Import Vue Router
        <div  v-show="!mobile">
         <div class="d-flex align-items-center">
          
-          <router-link @click="signOut" to="#"><a  class="text-decoration-none btn sign" href="">Sign Out</a></router-link>  
+          <router-link @click="signOut" to="/"><a  class="text-decoration-none btn sign" href="">Sign Out</a></router-link>  
            
        </div>
       </div>
@@ -113,7 +113,7 @@ import { useRouter } from 'vue-router'; // Import Vue Router
            <div class="d-flex flex-column ">
            
       
-             <router-link @click="signOut" to="#"><a href=""><button type="button" class="btn sign  " style="width:100%">Sign Out</button> </a> </router-link>
+             <router-link @click="signOut" to="/"><a href=""><button type="button" class="btn sign  " style="width:100%">Sign Out</button> </a> </router-link>
              
          </div>
        

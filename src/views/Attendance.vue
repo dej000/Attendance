@@ -1,36 +1,79 @@
 <template>
     <NavBar/> 
-    <div class="mid">
-      <div>
-        <h1>Attendance Website</h1>
+    <section class="container mag ">
+      <div class="mt-5">
+        <div class=" d-flex justify-content-between align-items-center mb-4  ">
+          <h1 class="">Overview</h1>
+          <div>
+            <button @click="checkLocation" :disabled="!isWithinLocation" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              Sign Attendance
+              </button>
+              
+              <div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="locationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="locationModalLabel">ATTENDANCE</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p v-if="isWithinLocation">Attendance Signed</p>
+                      <p v-else>You are not in the allowed location.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>       
+ 
+        </div>
+       
         
-  <button @click="checkLocation" :disabled="!isWithinLocation" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Sign Attendance
-  </button>
-  
-  <div class="modal fade" id="locationModal" tabindex="-1" role="dialog" aria-labelledby="locationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="locationModalLabel">ATTENDANCE</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p v-if="isWithinLocation">Attendance Signed</p>
-          <p v-else>You are not in the allowed location.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-      </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card p-3 mb-3">
+              <div class="p-3"><h2>21</h2></div>
+              <p>Total days attended</p>
+            </div>
+          </div>
     
+          <div class="col-md-6">
+            <div class="card p-3 mb-3">
+              <div class="p-3"><h2>365</h2></div>
+              <p>Total days attended</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+   <section class="container">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <th scope="row">{{ user.id }}</th>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+   </section>
+  
   </template>
   
   <script>
@@ -44,6 +87,12 @@
       return {
         acceptedRadius: 50, // Default accepted radius in degrees, adjust as needed
         isWithinLocation: false,
+        users: [
+        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+        { id: 2, name: 'Jane Doe', email: 'jane@example.com', role: 'User' },
+        { id: 3, name: 'Bob Smith', email: 'bob@example.com', role: 'Moderator' },
+        // Add more users as needed
+      ],
       };
     },mounted(){
     this.checkLocationOnLoad()
@@ -66,13 +115,7 @@
   
               // Update isWithinLocation based on the check
               this.isWithinLocation = distance <= this.acceptedRadius;
-              if (this.isWithinLocation) {
-                alert('Location allowed. Proceed with sign-up.');
-                // Add logic to proceed with sign-up or redirect to the registration page.
-              } else {
-                alert('You are not in the allowed location.');
-                // Add logic to handle disallowed location (e.g., show an error message).
-              }
+              
             
             },
             
@@ -112,11 +155,16 @@
     justify-content: center;
     align-items: center;
    height: 100vh;
-   background: pink;
+   background: rgb(83, 80, 80);
     
   }
-  
-  
+  .card{
+    border-radius: 8px;
+    background-color: bisque;
+  }
+  .mag {
+    margin-top: 6rem!important;
+}
   .butt{
     padding: 10px 20px;
     color: #ffffff;
@@ -125,4 +173,12 @@
     background: #05021A;
     font-family: 'Satoshi', sans-serif;
   }
+
+  
+  @media (max-width: 990px) {
+     h1 {
+      font-size: 1.5rem;
+    }
+    }
+
   </style>

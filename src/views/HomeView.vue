@@ -5,9 +5,8 @@
           <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
           
           <Form
-          @submit.prevent="signin" 
-            :validation-schema="schema"
-            @invalid-submit="onInvalidSubmit"
+          @submit="signin" 
+          
           >
           <h2 class="text-center"><strong>Log in</strong></h2>
           <p class="text-center text-muted">Welcome back!</p>
@@ -37,17 +36,17 @@
              <div class="form-group d-flex flex-column justify-content-center align-items-center  ">
                   <router-link  class="text-decoration-none mb-3" to="/"><a class="text-decoration-none " href="">FORGOT PASSWORD?</a></router-link>  
 
-                  <button @click="signin" class="btn submit-btn mb-3  m-0 btn-light " type="submit">LOGIN   <div class="spinner-border spinner-border-sm " v-show="loading" role="status">
+                  <button :disabled='loading' @click="signin" class="btn submit-btn mb-3  m-0 btn-light " type="submit">LOGIN   <div class="spinner-border spinner-border-sm " v-show="loading" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div> </button>
-               
+                
                   <router-link to="/register"><a  class="text-decoration-none " href="">New user? </a></router-link>
                 
               </div>
           </Form>
         </div>
           
-  
+      
   </section>
  
    
@@ -89,14 +88,16 @@ setTimeout(() => {
 },
 
 signin() {
+  this.loading=true;
     const auth = getAuth();
 signInWithEmailAndPassword(auth,this.email,this.password)
-    .then((userCredential) => {
 
-  this.$router.push({ name: 'attendance' });
+    .then((userCredential) => {
+      this.loading=false;
+   this.$router.push({ name: 'attendance' });
   })
   .catch((error) => {
- 
+    this.loading=false;
     this.errorMessage = error.message;
   });
     },
@@ -227,11 +228,7 @@ form{
   cursor: pointer;
 }
 
-.submit-btn.invalid {
-  animation: shake 0.5s;
-  /* When the animation is finished, start again */
-  animation-iteration-count: infinite;
-}
+
 
 @keyframes shake {
   0% {
