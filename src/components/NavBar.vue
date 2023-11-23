@@ -154,7 +154,7 @@ font-size: 16px !important;
   width: 100%;
   right: 0;
   background:white;
-  z-index: 9999;
+
 
   
 }
