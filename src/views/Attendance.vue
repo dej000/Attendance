@@ -211,10 +211,7 @@ console.log(jsDate)
       console.log("ok");
     
       const auth = getAuth();
-      console.log(auth.currentUser.uid)
-      const citiesRef = collection(db, "attendance");
-      const q = query(citiesRef, where("id", "==", auth.currentUser.uid),where("id", "==", auth.currentUser.uid));
-      const querySnapshot = await getDocs(q);
+      console.log(auth.currentUser)
       const a = new Date().toDateString()
       const b =this.users.length > 0? this.users[0].timestampField?.toDateString():''
       if(a!== b){
