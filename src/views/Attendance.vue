@@ -126,7 +126,7 @@ export default {
   },
   data() {
     return {
-      acceptedRadius: 10, // Default accepted radius in degrees, adjust as needed
+      acceptedRadius: 30.48, // Default accepted radius in degrees, adjust as needed
       isWithinLocation: false,
       users: [],
       user: null,
@@ -203,7 +203,7 @@ console.log(jsDate)
           Math.sin(dLon / 2) *
           Math.sin(dLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      const distance = R * c;
+      const distance = R * c ;
 
       return distance;
     },
