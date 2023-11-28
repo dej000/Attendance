@@ -32,9 +32,9 @@
         
 
         <div class="row mb-3">
-            <div class="col-12 d-flex justify-content-between ">
+            <div class="col-12 d-flex justify-content-between " >
                 <label class="m-0" for="dropdown">Team:</label>
-                <select class="col-9" name="team" v-model="team" id="dropdown1">
+                <select  class="col-9 " name="team" v-model="team" id="dropdown1">
                   <option value="MISSION">MISSION </option>
                   <option value="PROGRAM">PROGRAM</option>
                   <option value="MEMBERSHIP">MEMBERSHIP </option>
@@ -94,7 +94,7 @@
   import { Form } from 'vee-validate';
   import { collection, addDoc } from "firebase/firestore"
   import { getAuth, createUserWithEmailAndPassword,AuthErrorCodes  } from "firebase/auth";
-  import { useRouter } from 'vue-router'; // Import Vue Router
+  import { useRouter } from 'vue-router'; 
  import {db} from '../main'
 
   
@@ -150,10 +150,10 @@
   })
   .catch((error) => {
     if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
-          // The email address is already in use by another account
+          
           this.errorMessage = 'The email address is already in use by another account.';
         } else {
-          // Display a generic error message for other errors
+          
           this.errorMessage = 'Error signing up. Please try again later.';
         }
   });
