@@ -1,141 +1,175 @@
 <template>
-  <section class=" d-flex justify-content-center align-items-center container vh-100 mag">
-   
-        <div>
-          <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-          
-          <Form
-          @submit="signin" 
-          
-          >
-          <h2 class="text-center"><strong>Log in</strong></h2>
-          <p class="text-center text-muted">Welcome back!</p>
-             
-          <div class=" mb-3 ">
-          
-            <div class="" >
-              <input type="email"    placeholder="email" required v-model="email">
-            </div>
+  <section
+    class="d-flex justify-content-center align-items-center container vh-100 mag"
+  >
+    <div>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <Form @submit="signin">
+        <h2 class="text-center"><strong>Log in</strong></h2>
+        <p class="text-center text-muted">Welcome back!</p>
+
+        <div class="mb-3">
+          <div class="">
+            <input type="email" placeholder="email" required v-model="email" />
           </div>
-
-          <div>
-      
-            <div class="">
-              <input type="password" class="TextInput" placeholder="Password" required v-model="password">
-              </div>
-        
-              
-           
         </div>
-           
-           
-           
-      
-         
 
-             <div class="form-group d-flex flex-column justify-content-center align-items-center  ">
-                  <router-link  class="text-decoration-none mb-3" to="/"><a class="text-decoration-none " href="">FORGOT PASSWORD?</a></router-link>  
-
-                  <button :disabled='loading' @click="signin" class="btn submit-btn mb-3  m-0 btn-light " type="submit">LOGIN   <div class="spinner-border spinner-border-sm " v-show="loading" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div> </button>
-                
-                  <router-link to="/register"><a  class="text-decoration-none " href="">New user? </a></router-link>
-                
-              </div>
-          </Form>
+        <div>
+          <div class="">
+            <input
+              type="password"
+              class="TextInput"
+              placeholder="Password"
+              required
+              v-model="password"
+            />
+          </div>
         </div>
-          
-      
+
+        <div
+          class="form-group d-flex flex-column justify-content-center align-items-center"
+        >
+          <router-link class="text-decoration-none mb-3" to="/"
+            ><a class="text-decoration-none" href=""
+              >FORGOT PASSWORD?</a
+            ></router-link
+          >
+
+          <button
+            :disabled="loading"
+            @click="signin"
+            class="btn submit-btn mb-3 m-0 btn-light"
+            type="submit"
+          >
+            LOGIN
+            <div
+              class="spinner-border spinner-border-sm"
+              v-show="loading"
+              role="status"
+            >
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </button>
+
+          <router-link to="/register"
+            ><a class="text-decoration-none" href="">New user? </a></router-link
+          >
+        </div>
+      </Form>
+    </div>
   </section>
- 
-   
 </template>
 
 <script>
-
-import { ref } from '@vue/reactivity'
-import * as Yup from 'yup';
-import { Form } from 'vee-validate';
+import { ref } from "@vue/reactivity";
+import * as Yup from "yup";
+import { Form } from "vee-validate";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-  import { useRouter } from 'vue-router'; // Import Vue Router
-
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { useRouter } from "vue-router"; // Import Vue Router
+import { db } from "../main";
 
 export default {
-  components :{
+  components: {
     Form,
+  },
+
+  data() {
+    return {
+      schema: Yup.object().shape({
+        email: Yup.string().email().required(),
+        password: Yup.string().min(6).required(),
+      }),
+      loading: false,
+      errorMessage: "",
+    };
+  },
+  methods: {
+    onInvalidSubmit() {
+      const submitBtn = document.querySelector(".submit-btn");
+      submitBtn.classList.add("invalid");
+      setTimeout(() => {
+        submitBtn.classList.remove("invalid");
+      }, 1000);
     },
 
-  data(){
-  return{
-   schema : Yup.object().shape({
-email: Yup.string().email().required(),
-password: Yup.string().min(6).required(),
+    signin() {
+      this.loading = true;
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then(async (userCredential) => {
+          this.loading = false;
+          //  this.$router.push({ name: 'attendance' });
+          const usersCollection = collection(db, "user");
+          const auth = getAuth();
+          const q = query(
+            usersCollection,
+            where("id", "==", auth.currentUser.uid)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            console.log(doc.data());
+            if (!querySnapshot.empty) {
+            const userRole = doc.data().role;
 
-}),
-loading:false,
-errorMessage: '',
-  }
-
- },
- methods:{
-onInvalidSubmit() {
-const submitBtn = document.querySelector('.submit-btn');
-submitBtn.classList.add('invalid');
-setTimeout(() => {
-  submitBtn.classList.remove('invalid');
-}, 1000);
-},
-
-signin() {
-  this.loading=true;
-    const auth = getAuth();
-signInWithEmailAndPassword(auth,this.email,this.password)
-
-    .then((userCredential) => {
-      this.loading=false;
-   this.$router.push({ name: 'attendance' });
-  })
-  .catch((error) => {
-    this.loading=false;
-    this.errorMessage = error.message;
-  });
+            if (userRole === "ADMIN") {
+              // Redirect the user to the admin page
+              this.$router.push({ name: "admin" });
+            } else {
+              // Redirect the user to a regular user page (e.g., attendance page)
+              this.$router.push({ name: "attendance" });
+            }
+          } else {
+            // Handle the case when the user document is not found in Firestore
+            console.error("User document not found in Firestore");
+          }
+          });
+         
+        })
+        .catch((error) => {
+          this.loading = false;
+          this.errorMessage = error.message;
+          setTimeout(() => {
+            this.errorMessage = "";
+          }, 3000);
+        });
     },
- }
-
- 
-
-}
-  
-
+  },
+};
 </script>
 
 <style scoped>
-
-.mag{
-margin-top: 6rem!important;
+.mag {
+  margin-top: 6rem !important;
 }
-.error-message{
-  color: #f23648  !important;
+.error-message {
+  color: #f23648 !important;
 }
 
-nav a{
+nav a {
   font-size: 12px;
 }
 
-p,a{
-  color: #000000!important;
+p,
+a {
+  color: #000000 !important;
   font-size: 14px;
- 
- }
-label{
-color: #2E00E4!important;
-font-size: 12px;
-
 }
-h2{
-  color:#000000;
-  font-size: 28px;   
+label {
+  color: #2e00e4 !important;
+  font-size: 12px;
+}
+h2 {
+  color: #000000;
+  font-size: 28px;
 }
 .TextInput {
   position: relative;
@@ -149,20 +183,16 @@ label {
   width: 100%;
 }
 
-
-
 input {
-  
-  background-color:#eff0ff !important;
+  background-color: #eff0ff !important;
   border: 0;
   outline: none;
-  padding: 10px ;
+  padding: 10px;
   display: block;
   width: 100%;
   font-size: 12px;
   height: 40px;
 }
-
 
 input:focus {
   border-color: var(--primary-color);
@@ -170,7 +200,7 @@ input:focus {
 
 .help-message {
   position: absolute;
-  
+
   left: 0;
   margin: 0;
   font-size: 14px;
@@ -182,41 +212,35 @@ input:focus {
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
   background-color: #fff;
- border-radius: 0;
+  border-radius: 0;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-form{
- width: 550px;
+form {
+  width: 550px;
   height: 0%;
   padding: 10px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
-.btn{
-  background: #2E00E4;
+.btn {
+  background: #2e00e4;
   color: white;
   padding: 12px;
   width: 100%;
   border-radius: 0;
 }
 
-
-.form-group input{
-  background-color:#eff0ff !important;
+.form-group input {
+  background-color: #eff0ff !important;
   border: 0;
-  border-bottom:2px solid #2E00E4;
+  border-bottom: 2px solid #2e00e4;
   display: block;
   width: 100%;
   font-size: 12px;
-
 }
 
-
-
-
 .submit-btn {
- 
   outline: none;
   border: none;
   color: #fff;
@@ -227,8 +251,6 @@ form{
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
 }
-
-
 
 @keyframes shake {
   0% {
@@ -293,12 +315,11 @@ form{
 }
 
 @media (max-width: 990px) {
-form{
-  width: 350px;
-   height: 0%;
-   padding: 10px;
-   background-color: #FFFFFF;
+  form {
+    width: 350px;
+    height: 0%;
+    padding: 10px;
+    background-color: #ffffff;
+  }
 }
-}
-
 </style>

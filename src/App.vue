@@ -12,7 +12,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style >
 *{
-  font-family: 'Clash Display', sans-serif; 
+  font-family: sans-serif; 
 }
 :root {
   --primary-color: #0071fe;

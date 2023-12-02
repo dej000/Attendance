@@ -3,10 +3,10 @@
   
         <div class="hero d-flex justify-content-center align-items-center  vh-100 mt-5  "> 
            <div class="">
-    
+            <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
             <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
        
-      <Form @submit.prevent="register"      :validation-schema="schema"
+      <Form @submit="register"      :validation-schema="schema"
       @invalid-submit="onInvalidSubmit">
       <h2 class="text-center"><strong>Sign Up</strong></h2>
       <p class="text-center text-muted"></p>
@@ -116,7 +116,8 @@
       .oneOf([Yup.ref('password')], 'Passwords do not match'),
   }),
   errorMessage: '',
-  loading:false
+  loading:false,
+  successMessage: '',
       }
   
      },
@@ -133,8 +134,7 @@
     const auth = getAuth();
     createUserWithEmailAndPassword(auth,this.email,this.password)
     .then(async (userCredential) => {
-  
-    const user = userCredential.user;
+   const user = userCredential.user;
     const docRef = await addDoc(collection(db, "user"), {
   id: user.uid,
   name: this.name,
@@ -143,19 +143,19 @@
     team:this.team,
     department:this.department,
     role:'USER'
-   
 });
-
-    this.$router.push({ name: 'login' });
+this.successMessage = 'Registration successful!';
+this.$router.push({ name: 'home' });
   })
   .catch((error) => {
     if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
           
           this.errorMessage = 'The email address is already in use by another account.';
-        } else {
-          
-          this.errorMessage = 'Error signing up. Please try again later.';
-        }
+        } 
+        setTimeout(() => {
+          this.errorMessage = '';
+          this.successMessage = '';
+        }, 3000); 
   });
     },
   },
@@ -180,7 +180,9 @@
       --success-color: #21a67a;
       --success-bg-color: #e0eee4;
     }
-    
+   .success-message{
+    color: #21a67a;
+   }
   nav a{
       font-size: 12px;
   }
@@ -233,11 +235,7 @@
   input:focus {
     border-color: var(--primary-color);
   }
-  .submit-btn.invalid {
-    animation: shake 0.5s;
-    /* When the animation is finished, start again */
-    animation-iteration-count: infinite;
-  }
+ 
   @keyframes shake {
     0% {
       transform: translate(1px, 1px);

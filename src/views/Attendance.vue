@@ -184,12 +184,12 @@ console.log(jsDate)
           (error) => {
             console.error("Geolocation error:", error.message);
             alert("You are not in the allowed location.");
-            // Handle geolocation errors (e.g., show an error message to the user).
+       
           }
         );
       } else {
         console.error("Geolocation is not supported by your browser.");
-        // Handle the case where geolocation is not supported by the browser.
+      
       }
     },
     calculateDistance(lat1, lon1, lat2, lon2) {
