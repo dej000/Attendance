@@ -1,6 +1,6 @@
 
 <script>
-import { getAuth, signOut as firebaseSignOut } from 'firebase/auth';
+import { getAuth, signOut  } from 'firebase/auth';
 
 import { useRouter } from 'vue-router'; // Import Vue Router
 
@@ -53,10 +53,13 @@ import { useRouter } from 'vue-router'; // Import Vue Router
             },
             signOut() {
               const auth = getAuth();
-      firebaseSignOut(auth)
-.then(() => {
-
-  this.$router.push({ name: 'login' });
+      return signOut (auth)
+.then((e) => {
+ console.log(e)
+ window.location.reload(true) 
+ localStorage.clear()
+ sessionStorage.clear()
+  this.$router.push({ name: 'home' });
 }).catch((error) => {
  
 });
@@ -67,7 +70,7 @@ import { useRouter } from 'vue-router'; // Import Vue Router
 </script>
 <template>
  
-    <header class="header container gap-5 p-3 " :class="{'scrolled-nav':scrolledNav}"> 
+    <header class="header container gap-5 pt-3 " :class="{'scrolled-nav':scrolledNav}"> 
       <a class="navbar-brand  " href="/"><Logo src="/path/to/logo.png" /></a>
     <nav class="navbar d-flex align-items-center   ">
       <div v-show="!mobile" >
@@ -90,9 +93,11 @@ import { useRouter } from 'vue-router'; // Import Vue Router
        </nav> 
        <div  v-show="!mobile">
         <div class="d-flex align-items-center">
-         
-          <router-link @click="signOut" to="/"><a  class="text-decoration-none btn sign" href="">Sign Out</a></router-link>  
+         <button  class="text-decoration-none btn sign" @click="signOut" >
+         Sign Out
            
+         </button>
+       
        </div>
       </div>
       <div class="icon ">

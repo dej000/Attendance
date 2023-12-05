@@ -68,13 +68,13 @@ import { Form } from "vee-validate";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {
   collection,
-  addDoc,
+ 
   serverTimestamp,
   query,
   where,
   getDocs,
 } from "firebase/firestore";
-import { useRouter } from "vue-router"; // Import Vue Router
+import { useRouter } from "vue-router";
 import { db } from "../main";
 
 export default {
@@ -92,6 +92,9 @@ export default {
       errorMessage: "",
     };
   },
+  mounted (){
+  
+  },
   methods: {
     onInvalidSubmit() {
       const submitBtn = document.querySelector(".submit-btn");
@@ -100,7 +103,7 @@ export default {
         submitBtn.classList.remove("invalid");
       }, 1000);
     },
-
+ 
     signin() {
       this.loading = true;
       const auth = getAuth();
@@ -116,15 +119,15 @@ export default {
           );
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
-            console.log(doc.data());
+         
             if (!querySnapshot.empty) {
             const userRole = doc.data().role;
 
             if (userRole === "ADMIN") {
-              // Redirect the user to the admin page
+          
               this.$router.push({ name: "admin" });
             } else {
-              // Redirect the user to a regular user page (e.g., attendance page)
+              
               this.$router.push({ name: "attendance" });
             }
           } else {
@@ -142,6 +145,7 @@ export default {
           }, 3000);
         });
     },
+
   },
 };
 </script>
